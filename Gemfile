@@ -13,6 +13,7 @@ gem "devise", "4.9.4"
 gem "tailwindcss-ruby", "4.1.4"
 gem "tailwindcss-rails", "4.2.2"
 gem "syntax_tree", "6.2.0"
+gem "administrate", "1.0.0.beta3"
 
 gem "tzinfo-data", platforms: %i[windows jruby]
 

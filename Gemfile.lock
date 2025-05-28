@@ -72,6 +72,11 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
+    administrate (1.0.0.beta3)
+      actionpack (>= 6.0, < 9.0)
+      actionview (>= 6.0, < 9.0)
+      activerecord (>= 6.0, < 9.0)
+      kaminari (~> 1.2.2)
     base64 (0.2.0)
     bcrypt (3.1.20)
     benchmark (0.4.0)
@@ -117,6 +122,18 @@ GEM
     jbuilder (2.13.0)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
+    kaminari (1.2.2)
+      activesupport (>= 4.1.0)
+      kaminari-actionview (= 1.2.2)
+      kaminari-activerecord (= 1.2.2)
+      kaminari-core (= 1.2.2)
+    kaminari-actionview (1.2.2)
+      actionview
+      kaminari-core (= 1.2.2)
+    kaminari-activerecord (1.2.2)
+      activerecord
+      kaminari-core (= 1.2.2)
+    kaminari-core (1.2.2)
     logger (1.6.6)
     loofah (2.24.0)
       crass (~> 1.0.2)
@@ -287,6 +304,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  administrate (= 1.0.0.beta3)
   bootsnap
   brakeman (= 7.0.0)
   debug (= 1.9.1)

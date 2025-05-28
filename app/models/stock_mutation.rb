@@ -1,5 +1,5 @@
 class StockMutation < ApplicationRecord
   belongs_to :product
 
-  enum kind: { in: "in", out: "out" }
+  enum mutation_type: { stock_in: 0, stock_out: 1 }
 end
