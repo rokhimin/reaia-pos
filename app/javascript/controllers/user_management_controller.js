@@ -1,59 +1,60 @@
 // user_management_controller.js
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from '@hotwired/stimulus'
 
 export default class extends Controller {
-  static targets = ["table", "search", "filter", "loadMore"]
-  
+  static targets = ['table', 'search', 'filter', 'loadMore']
+
   search() {
     this.filterTable()
   }
-  
+
   filterRole() {
     this.filterTable()
   }
-  
+
   filterTable() {
     const searchText = this.searchTarget.value.toLowerCase()
     const roleFilter = this.filterTarget.value.toLowerCase()
-    
-    this.tableTarget.querySelectorAll("tbody tr").forEach(row => {
+
+    this.tableTarget.querySelectorAll('tbody tr').forEach((row) => {
       const username = row.cells[0].textContent.toLowerCase()
       const email = row.cells[1].textContent.toLowerCase()
       const role = row.cells[2].textContent.toLowerCase()
-      
-      const matchesSearch = username.includes(searchText) || email.includes(searchText)
+
+      const matchesSearch =
+        username.includes(searchText) || email.includes(searchText)
       const matchesRole = !roleFilter || role.includes(roleFilter)
-      
-      row.style.display = (matchesSearch && matchesRole) ? '' : 'none'
+
+      row.style.display = matchesSearch && matchesRole ? '' : 'none'
     })
   }
-  
+
   loadMore(event) {
     const btn = this.loadMoreTarget
     const currentPage = parseInt(btn.dataset.page)
     const nextPage = currentPage + 1
-    
+
     // Show loading indicator
     btn.innerHTML = 'Loading...'
     btn.disabled = true
-    
+
     fetch(`${btn.dataset.path}?page=${nextPage}&format=json`)
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         if (data.users?.length > 0) {
           const currentUserId = parseInt(btn.dataset.currentUserId)
           const tbody = this.tableTarget.querySelector('tbody')
-          
-          data.users.forEach(user => {
+
+          data.users.forEach((user) => {
             const row = document.createElement('tr')
             row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700'
             row.innerHTML = this.createUserRowHtml(user, currentUserId)
             tbody.appendChild(row)
           })
-          
+
           // Update page number
           btn.dataset.page = nextPage
-          
+
           // Hide button if all users loaded
           if (nextPage * 10 >= parseInt(btn.dataset.total)) {
             btn.style.display = 'none'
@@ -62,7 +63,7 @@ export default class extends Controller {
             btn.innerHTML = 'Load More Users'
             btn.disabled = false
           }
-          
+
           // Apply any active filters to the new rows
           this.filterTable()
         } else {
@@ -70,27 +71,29 @@ export default class extends Controller {
           btn.style.display = 'none'
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Error loading users:', error)
         // Reset button state on error
         btn.innerHTML = 'Load More Users'
         btn.disabled = false
       })
   }
-  
+
   createUserRowHtml(user, currentUserId) {
     const date = new Date(user.created_at)
-    const formattedDate = date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric', 
-      year: 'numeric' 
+    const formattedDate = date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
     })
-    
+
     // Get CSRF token for form submission
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
-    
+    const csrfToken = document
+      .querySelector('meta[name="csrf-token"]')
+      ?.getAttribute('content')
+
     let actionButtons = ''
-    
+
     // Edit button - consistent with Tailwind styling
     const editButton = `
       <a href="/admin/users/${user.id}/edit" class="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 p-1">
@@ -99,10 +102,10 @@ export default class extends Controller {
         </svg>
       </a>
     `
-    
+
     // Current user badge or delete button
     let deleteOrCurrentTag = ''
-    
+
     if (user.id !== currentUserId) {
       // Delete button for other users
       deleteOrCurrentTag = `
@@ -126,14 +129,14 @@ export default class extends Controller {
         </span>
       `
     }
-    
+
     actionButtons = `
       <div class="flex space-x-2">
         ${editButton}
         ${deleteOrCurrentTag}
       </div>
     `
-    
+
     // Full user row HTML
     return `
       <td class="px-4 py-3 whitespace-nowrap">${user.username}</td>
